@@ -1,6 +1,14 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 
 import Helpers from "./../libs/Helpers";
+import Validate from "../libs/Validate";
+import * as configs from "./../constants/Config";
+import {
+  actUpdateProduct,
+  actRemoveProduct,
+  actChangeNotify,
+} from "./../actions/index";
 
 class CartItem extends Component {
   constructor(props) {
@@ -18,6 +26,18 @@ class CartItem extends Component {
     this.setState({
       [name]: value,
     });
+  };
+  handleUpdate = (product, quantity) => {
+    if (Validate.checkQuantity(quantity) === false) {
+      this.props.changeNotify(configs.NOTI_GREATER_THAN_ONE);
+    } else {
+      this.props.updateProduct(product, +quantity);
+      this.props.changeNotify(configs.NOTI_ACT_UPDATE);
+    }
+  };
+  handleDelete = (product) => {
+    this.props.removeProduct(product);
+    this.props.changeNotify(configs.NOTI_ACT_DELETE);
   };
 
   render() {
@@ -42,6 +62,7 @@ class CartItem extends Component {
         <td>{this.showSubTotal(product, quantity)}</td>
         <td>
           <a
+            onClick={() => this.handleUpdate(product, quantity)}
             className="label label-info update-cart-item"
             href="/#"
             data-product
@@ -49,6 +70,7 @@ class CartItem extends Component {
             Update
           </a>
           <a
+            onClick={() => this.handleDelete(product)}
             className="label label-danger delete-cart-item"
             href="/#"
             data-product
@@ -71,4 +93,18 @@ class CartItem extends Component {
   }
 }
 
-export default CartItem;
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    updateProduct: (product, quantity) => {
+      dispatch(actUpdateProduct(product, quantity));
+    },
+    removeProduct: (product) => {
+      dispatch(actRemoveProduct(product));
+    },
+    changeNotify: (value) => {
+      dispatch(actChangeNotify(value));
+    },
+  };
+};
+
+export default connect(null, mapDispatchToProps)(CartItem);
