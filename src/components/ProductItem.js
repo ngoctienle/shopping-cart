@@ -1,8 +1,38 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 
+import * as configs from "./../constants/Config";
 import Helpers from "./../libs/Helpers";
+import Validate from "../libs/Validate";
+import { actBuyProduct, actChangeNotify } from "./../actions/index";
 
 class ProductItem extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: 1,
+    };
+  }
+
+  handleChange = (event) => {
+    const target = event.target; //input selectbox
+    const value = target.type === "checkbox" ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value,
+    });
+  };
+  handleClick = (product) => {
+    let quantity = +this.state.value;
+    if (Validate.checkQuantity(quantity) === false) {
+      this.props.changeNotify(configs.NOTI_GREATER_THAN_ONE);
+    } else {
+      this.props.buyProduct(product, quantity);
+      this.props.changeNotify(configs.NOTI_ACT_ADD);
+    }
+    this.setState({ value: 1 });
+  };
   render() {
     let { product } = this.props;
     return (
@@ -26,27 +56,43 @@ class ProductItem extends Component {
   }
   showAreaBuy(product) {
     let xhtml = null;
-    let price = Helpers.toCurrency(product.price, "$", "right");
+    let price = Helpers.toCurrency(product.price, "$", "left");
     if (product.canBuy === true) {
       xhtml = (
         <p>
           <input
-            name="quantity-product-1"
+            name="value"
             type="number"
-            defaultValue={1}
+            value={this.state.value}
+            onChange={this.handleChange}
             min={1}
           />
-          <a data-product={1} href="/#" className="price">
+          <a
+            onClick={() => this.handleClick(product)}
+            href="/#"
+            className="price"
+          >
             {price}
           </a>
         </p>
       );
     } else {
-      xhtml = <span className="price">{price}</span>;
+      xhtml = <span className="price">Not Available</span>;
     }
 
     return xhtml;
   }
 }
 
-export default ProductItem;
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    buyProduct: (product, quantity) => {
+      dispatch(actBuyProduct(product, quantity));
+    },
+    changeNotify: (value) => {
+      dispatch(actChangeNotify(value));
+    },
+  };
+};
+
+export default connect(null, mapDispatchToProps)(ProductItem);
