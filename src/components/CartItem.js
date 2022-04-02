@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import Helpers from "./../libs/Helpers";
+import Helpers from "../libs/Helpers";
 import Validate from "../libs/Validate";
-import * as configs from "./../constants/Config";
+import * as configs from "../constants/Config";
 import {
   actUpdateProduct,
   actRemoveProduct,
   actChangeNotify,
-} from "./../actions/index";
+} from "../actions/index";
 
 class CartItem extends Component {
   constructor(props) {

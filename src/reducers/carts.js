@@ -1,7 +1,7 @@
 import { remove } from "lodash";
 
-import * as types from "./../constants/ActionType";
-import * as configs from "./../constants/Config";
+import * as types from "../constants/ActionType";
+import * as configs from "../constants/Config";
 
 let defaultState = [];
 let cartItems = JSON.parse(

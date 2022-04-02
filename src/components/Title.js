@@ -5,7 +5,7 @@ class Title extends Component {
     return (
       <div className="page-header">
         <h1>
-          Project 02 - Shopping Cart <small>ReactJS</small>
+          Shopping Cart <small>ReactJS Redux</small>
         </h1>
       </div>
     );

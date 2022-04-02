@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { sumBy } from "lodash";
 
-import Helpers from "./../libs/Helpers";
+import Helpers from "../libs/Helpers";
 import CartItem from "./CartItem";
 import Notify from "./Notify";
 
